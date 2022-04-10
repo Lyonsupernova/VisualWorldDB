@@ -1,0 +1,24 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100vw;
+}
+
+h1 {
+    font-weight: normal;
+    font-size: 3rem;
+}
+
+nav {
+    width: 100%
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
