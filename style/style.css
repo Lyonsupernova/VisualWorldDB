@@ -1,0 +1,54 @@
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+html {
+    
+}
+
+body {
+
+}
+
+.dashboard-container {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 8em 2em 2em 2em;
+    background-color: dimgray;
+    width: 250px;
+    height: 100vh;
+}
+
+.annotation-header {
+    font-size: medium;
+}
+
+.frame-box-outer-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: absolute;
+    top: 60px;
+    left: 250px;
+}
+
+.frame-box-container {
+    margin: 20px;
+}
+
+.btn {
+    margin: 10px 0 10px 0;
+}
+
+.offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    margin: 3em 0 0 0;
+}
+
+.video-player {
+    width: 300px;
+    margin: 2em 0 2em 0;
+}
