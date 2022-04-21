@@ -1,0 +1,48 @@
+{
+  "name": "visualworlddb",
+  "version": "1.0.0",
+  "description": "Contributors\r ==========\r * Allen Sarkisyan - Lead engineer\r * Paige Raynes - Product Development\r * Dan Jacinto - Video Asset Quality Analyst",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node scripts/watch.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lyonsupernova/VisualWorldDB.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lyonsupernova/VisualWorldDB/issues"
+  },
+  "homepage": "https://github.com/Lyonsupernova/VisualWorldDB#readme",
+  "dependencies": {
+    "@babel/core": "^7.17.9",
+    "browserify-shim": "^3.8.14",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "^0.0.1-security",
+    "save": "^2.4.0",
+    "uniq": "^1.0.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.11",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "@babel/preset-env"
+          ]
+        }
+      ]
+    ]
+  }
+}

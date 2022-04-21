@@ -1,46 +1,6 @@
 import {VideoFrame} from "./VideoFrame.js"
 
-// const FRAMES = [10, 20, 50]
-
-// var tupleList = [("video-1", 10), ("video-3", 40)]
-// // [(v1,10),(V2, 9), (V1, 5)]
-// let container = document.getElementById("capture-results")
-// let captureBtn = document.getElementById('capture-btn')
-
-// var video = new VideoFrame({id: "video"})
-// var videoEle = document.getElementById('video');
-// //videoEle.currentFrame = 0; 
-
-// captureBtn.addEventListener('click', () => {
-//   seekToFrame()
-// })
-
-// videoEle.addEventListener("seeked", () => {
-//   capture(container)
-//   seekToFrame()
-// })
-
-// function seekToFrame() {
-//   if (FRAMES.length > 0) {
-//     video.seekTo({frame: FRAMES.shift()})
-//   }
-// }
-
-// function capture(container) {
-//   var canvas = document.createElement('canvas');  
-//   canvas.width = videoEle.videoWidth; // 480
-//   canvas.height = videoEle.videoHeight; // 320 
-//   console.log(videoEle.videoWidth)
-//   console.log(videoEle.videoHeight)
-
-//   /** Code to merge image **/
-//   /** For instance, if I want to merge a play image on center of existing image **/
-//   canvas.getContext('2d').drawImage(videoEle, 0, 0, videoEle.videoWidth, videoEle.videoHeight);
-//   container.appendChild(canvas)
-//   /** End **/
-// }
-
-const VIDEO_FILE_DIRECTORY = './data/video_00000-01000/'
+const VIDEO_FILE_DIRECTORY = 'static/video/video_00000-01000/'
 const VIDEO_AND_FRAME_MOCK_DATA = [
   {video: "v1", frame: 23}, 
   {video: "v3", frame: 19},
@@ -86,9 +46,9 @@ function createFrameBox(videoId, frameNumber) {
   frameBoxHeader.innerText = "Video " + videoId + ", Frame " + frameNumber;
 
   const frameImg = document.createElement("img");
-  frameImg.setAttribute("src", "./frame-data" + "/" + videoId + ".png");
+  frameImg.setAttribute("src", "static/frame-data" + "/" + videoId + ".png");
   frameImg.setAttribute("alt", "video frame");
-
+  console.log(frameImg.src)
   const annotationToolsContainer = document.createElement('div');
   annotationToolsContainer.setAttribute("class", "annotation-tools-container");
 
