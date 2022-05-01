@@ -22,11 +22,16 @@ def index():
 
 
 # @return a dict with video ids and associated frame id,
-# e.g.[('video_01000.mp4': 3), ('video_01000.mp4': 4), 
-# ('video_00004.mp4': 25), 
-# ('video_00008.mp4': 17), 
-# 'video_00010.mp4': [5, 22, 38, 47, 60, 88, 96, 98, 121, 121], 
-# 'video_00006.mp4': [12, 20, 29, 33, 36, 50, 67, 79, 91, 107]]
+# e.g.
+# [{"video": "video_00001.mp4", "frame": 110}, {"video": "video_00007.mp4", "frame": 93},
+# {"video": "video_00007.mp4", "frame": 55}, {"video": "video_00007.mp4", "frame": 76},
+# {"video": "video_00007.mp4", "frame": 68}, {"video": "video_00007.mp4", "frame": 16},
+# {"video": "video_00004.mp4", "frame": 11}, {"video": "video_00004.mp4", "frame": 22},
+# {"video": "video_00006.mp4", "frame": 7}, {"video": "video_00006.mp4", "frame": 64}, 
+# {"video": "video_00004.mp4", "frame": 112}, {"video": "video_00001.mp4", "frame": 12}, 
+# {"video": "video_00001.mp4", "frame": 105}, {"video": "video_00001.mp4", "frame": 97}, 
+# {"video": "video_00004.mp4", "frame": 68}, {"video": "video_00007.mp4", "frame": 70}, 
+# {"video": "video_00006.mp4", "frame": 125}, {"video": "video_00006.mp4", "frame": 58}]
 @app.route('/fetch-video')
 def fetch():
     file_list = os.listdir('./static/video')
