@@ -1,16 +1,25 @@
 
-from flask import Flask, render_template, jsonify
+from datetime import timedelta
+import flask
 import os
 import random
 import cv2
 import json
 from moviepy.editor import VideoFileClip
+from requests import request
+from prepare_bounding_box import *
+import uuid
 
-app = Flask(__name__, template_folder='template', static_folder='static')
+app = flask.Flask(__name__, template_folder='template', static_folder='static')
+app.secret_key = "aksjdhbakncoiu2op20109m,d"
+app.permanent_session_lifetime = timedelta(minutes=5)
 
-@app.route('/')
+
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    return flask.render_template('index.html')
+
 
 # @return a dict with video ids and associated frame id,
 # e.g.{'video_01000.mp4': [3, 10, 20, 44, 60, 69, 84, 85, 99, 115], 
@@ -40,43 +49,45 @@ def fetch():
                               status=200,
                               mimetype='application/json')
 
-# @param video_id: the video id. e.g.: video_00000.mp4
+# @param video_id: the video id. e.g.: 0
 # @param start: time to start with e.g.: ‘01:03:05.35’.
 # @param end: time to end with e.g.: ‘01:05:05.35’.
-@app.route('/extract-segment/<video_id>/<start>/<end>')
+@app.route('/extract-segment/<video_id>/<start>/<end>', methods=['POST', "GET"])
 def extract(video_id, start, end):
     # static/video/video_00000.mp4
-    src = './static/video/' + str(video_id)
-    clip = VideoFileClip(src).subclip(start, end)
-    outputfile = "./static/output/" + video_id
-    clip.to_videofile(outputfile, codec="libx264", temp_audiofile='temp-audio.m4a', remove_temp=True, audio_codec='aac')
-    return app.response_class(response=json.dumps("Success converting"),
-                                                        status=200,
-                                                        mimetype='application/json')
-
-# @param video_id: the video id. e.g.: video_00000.mp4
+    if flask.request.method == "GET":
+        if not flask.request.args.get('session-id'): # not contain session_id
+            session_id = str(uuid.uuid1())
+            flask.session.permanent = True
+            src = './static/video/video_%05d.mp4' % int(video_id)
+            clip = VideoFileClip(src).subclip(start, end)
+            outputfile = './static/output/'+ session_id + "_" + start + '_' + end + '_video_%05d_.mp4' % int(video_id)
+            clip.to_videofile(outputfile, codec="libx264", temp_audiofile='temp-audio.m4a', remove_temp=True, audio_codec='aac')
+            flask.session[session_id] = outputfile
+            return app.response_class(response=json.dumps("converted successfully with session_id: " + session_id + " output file in " + outputfile),
+                                                                status=200,
+                                                                mimetype='application/json')
+        else: 
+            session_id = request.args.get('session-id')
+            return app.response_class(response=json.dumps("h"),
+                                                                statis=200,
+                                                                mimetype='application/json')
+    return app.response_class(response="Invalid Access method", 
+                              status=404,
+                              mimetype="application/json")      
+            
+# @param video_id: the video id. e.g.: 0
 # @param frame_id: the frame id. e.g.: ‘1’.
 # @param object_id: the object_id e.g.: ‘1’.
-@app.route('/box/<video_id>/<frame_id>/<object_id>')
-def getBox(video_id, frame_id, object_id):
-    file_name = "./static/annotation/annotation" + video_id.replace('video', '') + '.json'
-    with open(file_name) as json_file:
-        data = json.load(json_file)
-        motion_trajectory = data['motion_trajectory']
-        for motion in motion_trajectory:
-            if str(motion['frame_id']) == frame_id:
-                objects = motion['objects']
-                for object in objects:
-                    if str(object['object_id']) == object_id:
-                         response = app.response_class(response=json.dumps(object['location']),
-                                                        status=200,
-                                                        mimetype='application/json')
-                         return response
+@app.route('/box/<video_id>/<frame_id>')
+def getBox(video_id, frame_id):
+    box_dict = getBoxVideoFrame(video_id, frame_id)
     return app.response_class(
-        response="Invalid Access: must provide video_id, frame_id, object_id",
-        status=400,
+        response=json.dumps(str(box_dict)),
+        status=200,
         mimetype='application/json'
     )
+    
 if __name__ == '__main__':
     app.run(debug=True)
     
