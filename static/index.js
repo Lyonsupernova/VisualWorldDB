@@ -1,6 +1,6 @@
 import {VideoFrame} from "./VideoFrame.js"
 
-const VIDEO_FILE_DIRECTORY = 'static/video/video_00000-01000/'
+const VIDEO_FILE_DIRECTORY = './static/video/'
 const VIDEO_AND_FRAME_MOCK_DATA = [
   {video: "v1", frame: 23}, 
   {video: "v3", frame: 19},
@@ -12,15 +12,18 @@ const VIDEO_AND_FRAME_MOCK_DATA = [
   {video: "v4", frame: 32}, 
   {video: "v2", frame: 79}]
 
-  const VIDEO_NAME_DATA = [
-    {video: "v1", name: "video_01000.mp4"}, 
-    {video: "v2", name: "video_01001.mp4"},
-    {video: "v3", name: "video_01002.mp4"},
-    {video: "v4", name: "video_01003.mp4"}]
+const videoNameSet = new Set()
+
+const rectangles = [
+  {topLeft: 74, bottomRight: 66.89999389648438, width: 80.5, height: 71}
+];
 
 async function fetchData() {
    try {
-    //fetch data
+    const videoDataResponse = await fetch('http://127.0.0.1:5000/fetch-video')
+    const videoDataResponseJson = await videoDataResponse.json()
+    console.log("video data response: ", videoDataResponseJson)
+    return videoDataResponseJson
    } catch (err) {
      console.log(err)
    }
@@ -31,10 +34,32 @@ function insertFrameBox(videoFrameData) {
   frameBoxOuterContainer.innerHTML = "";
 
   videoFrameData.forEach(data => {
+    videoNameSet.add(data.video)
     const frameBoxContainer = createFrameBox(data.video, data.frame);
     frameBoxOuterContainer.appendChild(frameBoxContainer);
   })
+}
 
+function drawImageByFrame(videoName, frameNumber, parent) {
+  console.log("frame #: ", frameNumber)
+  const video = document.createElement('video')
+  video.setAttribute('src', VIDEO_FILE_DIRECTORY + videoName)
+  video.setAttribute('id', "video-box")
+  var videoFrame = new VideoFrame() // no param passed here, since we don't need to manipulate video elemtn in VideoFrame object. 
+  var canvas = document.createElement('canvas');  
+  
+  video.addEventListener("seeked", () => {
+    canvas.width = video.videoWidth; // 480
+    canvas.height = video.videoHeight; // 320 
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+  })
+
+  // handle seeking forward 
+  const SMPTE = videoFrame.toSMPTE(frameNumber);
+  const seekTime = ((videoFrame.toMilliseconds(SMPTE) / 1000) + 0.001);
+  video.currentTime = seekTime
+  return canvas
 }
 
 function createFrameBox(videoId, frameNumber) {
@@ -45,10 +70,13 @@ function createFrameBox(videoId, frameNumber) {
   frameBoxHeader.setAttribute("class", "frame-box-header");
   frameBoxHeader.innerText = "Video " + videoId + ", Frame " + frameNumber;
 
-  const frameImg = document.createElement("img");
-  frameImg.setAttribute("src", "static/frame-data" + "/" + videoId + ".png");
-  frameImg.setAttribute("alt", "video frame");
-  console.log(frameImg.src)
+  // const frameImg = document.createElement("img");
+  // frameImg.setAttribute("src", "static/frame-data" + "/" + videoId + ".png");
+  // frameImg.setAttribute("alt", "video frame");
+
+
+  const frameImg = drawImageByFrame(videoId, frameNumber, frameBoxContainer)
+  
   const annotationToolsContainer = document.createElement('div');
   annotationToolsContainer.setAttribute("class", "annotation-tools-container");
 
@@ -86,19 +114,13 @@ function insertVideoPlayer(videoNameData) {
   videoContainer.innerHTML = "";
   videoNameData.forEach(data => {
     const videoEle = document.createElement("video")
-    videoEle.setAttribute("src", VIDEO_FILE_DIRECTORY + data.name);
+    videoEle.setAttribute("src", VIDEO_FILE_DIRECTORY +  data);
     videoEle.setAttribute("class", "video-player");
     videoEle.setAttribute("controls", true);
     videoContainer.appendChild(videoEle);
   })
 }
 
-const fetchDataBtn = document.getElementById("fetch-data-btn");
-fetchDataBtn.addEventListener("click", () => {
-  fetchData()
-  insertFrameBox(VIDEO_AND_FRAME_MOCK_DATA)
-  insertVideoPlayer(VIDEO_NAME_DATA)
-})
 
 const submitAnnotationBtn = document.getElementById("submit-annotation-btn");
 submitAnnotationBtn.addEventListener("click", () => {
@@ -118,4 +140,12 @@ submitAnnotationBtn.addEventListener("click", () => {
   console.log(annotationResult);
 })
 
+
+const fetchDataBtn = document.getElementById("fetch-data-btn");
+fetchDataBtn.addEventListener("click", async () => {
+  const videoNameAndFramedata = await fetchData()
+  console.log("fetched data: ", videoNameAndFramedata)
+  insertFrameBox(videoNameAndFramedata)
+  insertVideoPlayer(Array.from(videoNameSet))
+})
 
