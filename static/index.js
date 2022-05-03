@@ -20,7 +20,7 @@ const rectangles = [
 
 async function fetchData() {
    try {
-    const videoDataResponse = await fetch('http://127.0.0.1:5000/fetch-video')
+    const videoDataResponse = await fetch('/fetch-video')
     const videoDataResponseJson = await videoDataResponse.json()
     console.log("video data response: ", videoDataResponseJson)
     return videoDataResponseJson
