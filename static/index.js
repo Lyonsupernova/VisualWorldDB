@@ -23,6 +23,16 @@ async function fetchData() {
     const videoDataResponse = await fetch('/fetch-video')
     const videoDataResponseJson = await videoDataResponse.json()
     console.log("video data response: ", videoDataResponseJson)
+    for(let i = 0; i < videoDataResponseJson.length; i++) {
+      const videoName = videoDataResponseJson[i].video
+      const frameNum = videoDataResponseJson[i].frame
+      const videoId = videoDataResponseJson[i].video.charAt(videoName.length - 5)
+      const boundingBoxDataResponse = await fetch(`/box/${videoId}/${frameNum}`)
+      let boundingBoxDataResponseJson = await boundingBoxDataResponse.json()
+      boundingBoxDataResponseJson = boundingBoxDataResponseJson.replaceAll(`'`, `"`)
+      boundingBoxDataResponseJson = JSON.parse(boundingBoxDataResponseJson)
+      videoDataResponseJson[i]["bounding_box_data"] = boundingBoxDataResponseJson
+    }
     return videoDataResponseJson
    } catch (err) {
      console.log(err)
@@ -35,16 +45,17 @@ function insertFrameBox(videoFrameData) {
 
   videoFrameData.forEach(data => {
     videoNameSet.add(data.video)
-    const frameBoxContainer = createFrameBox(data.video, data.frame);
+    const frameBoxContainer = createFrameBox(data.video, data.frame, data.bounding_box_data);
     frameBoxOuterContainer.appendChild(frameBoxContainer);
   })
 }
 
-function drawImageByFrame(videoName, frameNumber, parent) {
+function drawImageByFrame(videoName, frameNumber, bounding_box_data) {
   console.log("frame #: ", frameNumber)
   const video = document.createElement('video')
   video.setAttribute('src', VIDEO_FILE_DIRECTORY + videoName)
   video.setAttribute('id', "video-box")
+
   var videoFrame = new VideoFrame() // no param passed here, since we don't need to manipulate video elemtn in VideoFrame object. 
   var canvas = document.createElement('canvas');  
   
@@ -53,6 +64,22 @@ function drawImageByFrame(videoName, frameNumber, parent) {
     canvas.height = video.videoHeight; // 320 
     const ctx = canvas.getContext('2d')
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+    bounding_box_data.forEach(box_data => {
+      console.log("box data: ", box_data)
+      const coord = {
+        topLeft: {
+          x: box_data.lt[0],
+          y: box_data.lt[1]
+        },
+        bottomRight: {
+          x: box_data.rb[0],
+          y: box_data.rb[1]
+        }
+      }
+      
+      console.log("coord data: ", coord)
+      drawBoundingBox(coord, ctx, box_data.color)
+    })
   })
 
   // handle seeking forward 
@@ -62,7 +89,54 @@ function drawImageByFrame(videoName, frameNumber, parent) {
   return canvas
 }
 
-function createFrameBox(videoId, frameNumber) {
+const COORD_PLACEHOLDER = {
+  topLeft: {
+    x: 200,
+    y: 200
+  },
+  bottomRight: {
+    x: 250,
+    y: 250
+  }
+}
+
+const COLOR_PLACEHOLDER = '#ffff24'
+
+function drawBoundingBox(coords, canvasCtx, color) {
+ const processedCoords = processCoords(coords)
+ console.log("processed coords: ", processedCoords)
+
+ canvasCtx.lineWidth = 2;
+ canvasCtx.strokeStyle = color;
+ canvasCtx.beginPath()
+ canvasCtx.moveTo(coords.topLeft.x, coords.topLeft.y)
+ canvasCtx.lineTo(coords.topRight.x, coords.topRight.y)
+ canvasCtx.stroke();
+ canvasCtx.lineTo(coords.bottomRight.x, coords.bottomRight.y)
+ canvasCtx.stroke();
+ canvasCtx.lineTo(coords.bottomLeft.x, coords.bottomLeft.y)
+ canvasCtx.stroke();
+ canvasCtx.lineTo(coords.topLeft.x, coords.topLeft.y)
+ canvasCtx.stroke();
+}
+
+
+function processCoords(coords) {
+  const topRight = {
+    x: coords.bottomRight.x,
+    y: coords.topLeft.y
+  }
+
+  const bottomLeft = {
+    x: coords.topLeft.x,
+    y: coords.bottomRight.y
+  }
+  coords.topRight = topRight
+  coords.bottomLeft = bottomLeft
+  return coords
+}
+
+function createFrameBox(videoId, frameNumber, boundingBoxData) {
   const frameBoxContainer = document.createElement('div');
   frameBoxContainer.setAttribute("class", "frame-box-container")
   
@@ -74,13 +148,12 @@ function createFrameBox(videoId, frameNumber) {
   // frameImg.setAttribute("src", "static/frame-data" + "/" + videoId + ".png");
   // frameImg.setAttribute("alt", "video frame");
 
-
-  const frameImg = drawImageByFrame(videoId, frameNumber, frameBoxContainer)
+  const frameImg = drawImageByFrame(videoId, frameNumber, boundingBoxData)
   
   const annotationToolsContainer = document.createElement('div');
   annotationToolsContainer.setAttribute("class", "annotation-tools-container");
 
-  const annotationHeader = document.createElement("h2");
+  const annotationHeader = document.createElement("h1");
   annotationHeader.setAttribute("class", "annotation-header");
   annotationHeader.innerText = "Annotation:";
 
@@ -149,3 +222,26 @@ fetchDataBtn.addEventListener("click", async () => {
   insertVideoPlayer(Array.from(videoNameSet))
 })
 
+const getVideoSegmentBtn = document.getElementById("get-video-segment-btn");
+getVideoSegmentBtn.addEventListener("click", async () => {
+  const time1 = toTime(24, video)
+  const time2 = toTime(54, video)
+
+  const getVideoSegmentResponse = await fetch(`/extract-segment/0/${time1}/${time2}`)
+  console.log(getVideoSegmentResponse)
+})
+
+const toTime = (frames, video) =>  {
+ var time = (typeof frames !== 'number' ? video.currentTime : frames), frameRate = 24;
+ var dt = (new Date()), format = 'hh:mm:ss' + (typeof frames === 'number' ? ':ff' : '');
+ dt.setHours(0); dt.setMinutes(0); dt.setSeconds(0); dt.setMilliseconds(time * 1000);
+ function wrap(n) { return ((n < 10) ? '0' + n : n); }
+ return format.replace(/hh|mm|ss|ff/g, function(format) {
+  switch (format) {
+   case "hh": return wrap(dt.getHours() < 13 ? dt.getHours() : (dt.getHours() - 12));
+   case "mm": return wrap(dt.getMinutes());
+   case "ss": return wrap(dt.getSeconds());
+   case "ff": return wrap(Math.floor(((time % 1) * frameRate)));
+  }
+ });
+};
