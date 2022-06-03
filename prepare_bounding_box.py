@@ -18,7 +18,7 @@ def decode(rleObjs):
 
 # pprint(data)
 
-def getBoxVideoFrame(video_id, frame_id):
+def getBoxVideoFrame(dataset_id, video_id, frame_id):
     with open(os.path.join('./static/sim/', 'sim_%05d.json' % int(video_id))) as f:
         data = json.load(f)
     print(data['video_name'])
@@ -27,8 +27,8 @@ def getBoxVideoFrame(video_id, frame_id):
     print('frame_index', frame['frame_index'])
     objects = frame['objects']
     print(len(objects))
-    print("filepath: " + "./static/video/video_{}.mp4".format(str(video_id).zfill(5)))
-    cap = cv2.VideoCapture("./static/video/video_{}.mp4".format(str(video_id).zfill(5)))
+    print("filepath: " + "./static/video/{}/video_{}.mp4".format(dataset_id, str(video_id).zfill(5)))
+    cap = cv2.VideoCapture("./static/video/{}/video_{}.mp4".format(dataset_id, str(video_id).zfill(5)))
     cap.set(cv2.CAP_PROP_POS_FRAMES, int(frame_id))
     ret, image = cap.read()
     box_list = []
@@ -43,6 +43,7 @@ def getBoxVideoFrame(video_id, frame_id):
         res = cv2.rectangle(image, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (0,255,0), 1)
         print(box)
         cv2.imwrite('./static/mask/mask_%d.png' % i, res)
+        print(box_dict)
         box_dict['material'] = objects[i]['material']
         box_dict['color'] = objects[i]['color']
         box_dict['shape'] = objects[i]['shape']
