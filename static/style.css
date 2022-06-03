@@ -16,13 +16,13 @@ body {
     flex-direction: column;
     justify-content: flex-start;
     padding: 8em 2em 2em 2em;
-    background-color: dimgray;
-    width: 250px;
+    border: solid dimgray 2px;
+    width: 350px;
     height: 100vh;
 }
 
 .annotation-header {
-    font-size: medium;
+    font-size: 20px;
 }
 
 .frame-box-outer-container {
@@ -31,7 +31,11 @@ body {
     flex-wrap: wrap;
     position: absolute;
     top: 60px;
-    left: 250px;
+    left: 350px;
+}
+
+.frame-box-header {
+    font-size: 25px;
 }
 
 .frame-box-container {
@@ -51,4 +55,25 @@ body {
 .video-player {
     width: 300px;
     margin: 2em 0 2em 0;
+}
+
+.canvas-container {
+    position: relative;
+}
+
+.bounding-box {
+    position: absolute;
+    border: 2px solid;
+}
+
+.bounding-box.selected {
+    border: 10px solid;
+}
+
+
+.build-predicate {
+    display: none;
+    border: solid dimgray 2px;
+    margin-top: 10px;
+    padding: 20px 10px;
 }

@@ -41,8 +41,45 @@
         <h2>Video Frames:</h2>
         <div id="capture-results"> </div> -->
       <div class="dashboard-container">
+
+        <label for="dataset-selection">Choose Dataset</label>
+
+        <select name="dataset-selection" id="dataset-selection">
+          <option value="volvo">Example dataset</option>
+        </select>
+
+        
+
+        <label for="video-selectioon">Choose Video</label>
+
+        <select name="video-selectioon" id="video-selectioon">
+          <option value="video1">video1</option>
+        </select>
+
+
         <button type="button" class="btn btn-primary" id="fetch-data-btn">Fetch video data</button>
-        <button type="button" class="btn btn-primary" id="submit-annotation-btn">Submit annotation</button>
+
+        <div id="build-predicate" class="build-predicate">
+          <h3>Build a predicate</h3>
+          <h4>Select type</h4>
+          
+          <select name="predicate-type" id="predicate-type">
+            <option value="relationship">Relationship</option>
+          </select>
+
+          <h4>Select object </h4>
+
+          <div>
+            <h7>Object #1</h7>
+            <select name="object-1-select" id="object-1-select"></select>
+          </div>
+          
+          <div>
+            <h7>Object #2</h7>
+            <select name="object-2-select" id="object-2-select"></select>
+          </div>
+
+        </div>
       </div>
 
       <div class="frame-box-outer-container" id="frame-box-outer-container">
