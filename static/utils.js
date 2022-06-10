@@ -1,5 +1,5 @@
 
-export const VIDEO_FILE_DIRECTORY = './static/video/'
+export const VIDEO_FILE_DIRECTORY = './static/video/dataset_1/'
 
 export const toTime = (frames, video) =>  {
 	var time = (typeof frames !== 'number' ? video.currentTime : frames), frameRate = 24;

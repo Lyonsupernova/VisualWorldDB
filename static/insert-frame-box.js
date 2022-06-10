@@ -7,9 +7,12 @@ export function insertFrameBox(videoFrameData) {
     const frameBoxOuterContainer = document.getElementById("frame-box-outer-container");
     frameBoxOuterContainer.innerHTML = "";
   
-    videoFrameData.forEach(data => {
-      videoNameSet.add(data.video)
-      data.bounding_box_data.forEach(box_data => {
+    const videoName = videoFrameData.video_id
+    videoNameSet.add(videoName)
+    
+
+    videoFrameData.bounding_box.forEach((box_data_arr, index)=> {
+      box_data_arr.forEach(box_data => {
         const objectID = box_data.color + '-' + box_data.material + '-' + box_data.shape
         box_data['id'] = objectID;
         if(!objectNumberMapping.has(objectID)) {
@@ -17,7 +20,7 @@ export function insertFrameBox(videoFrameData) {
         }
       })
 
-      const frameBoxContainer = createFrameBox(data.video, data.frame, data.bounding_box_data);
+      const frameBoxContainer = createFrameBox(videoName, videoFrameData.frame_id[index], box_data_arr);
       frameBoxOuterContainer.appendChild(frameBoxContainer);
     })
 
