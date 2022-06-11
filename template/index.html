@@ -42,19 +42,15 @@
         <div id="capture-results"> </div> -->
       <div class="dashboard-container">
 
-        <label for="dataset-selection">Choose Dataset</label>
-
-        <select name="dataset-selection" id="dataset-selection">
-          <option value="volvo">Example dataset</option>
-        </select>
-
-        
-
-        <label for="video-selectioon">Choose Video</label>
-
-        <select name="video-selectioon" id="video-selectioon">
-          <option value="video1">video1</option>
-        </select>
+        <div class="data-select">
+          <label for="dataset-selection">Choose Dataset</label>
+          <select name="dataset-selection" id="dataset-selection">
+          </select>
+          
+          <label for="video-selectioon">Choose Video</label>
+          <select name="video-selectioon" id="video-selection">
+          </select>
+        </div>
 
 
         <button type="button" class="btn btn-primary" id="fetch-data-btn">Fetch video data</button>
@@ -80,6 +76,12 @@
           </div>
 
         </div>
+
+
+       
+        <button type="button" class="btn btn-primary" id="submit-annotation-btn">Submit Annotation</button>
+
+        
       </div>
 
       <div class="frame-box-outer-container" id="frame-box-outer-container">

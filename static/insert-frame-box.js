@@ -2,6 +2,7 @@ import { VideoFrame } from './VideoFrame.js'
 import { drawBoundingBox } from "./bounding-box.js";
 import { objectNumberMapping, videoNameSet } from "./index.js";
 import { VIDEO_FILE_DIRECTORY } from "./utils.js";
+import createAnnotationBlock from './create-annotation-block.js';
 
 export function insertFrameBox(videoFrameData) {
     const frameBoxOuterContainer = document.getElementById("frame-box-outer-container");
@@ -45,35 +46,47 @@ function createFrameBox(videoId, frameNumber, boundingBoxData) {
       const option = document.createElement('option')
       //option.value = 
     })
+
+    createAnnotationBlock(frameBoxContainer, frameNumber)
+
+
     
-    const annotationToolsContainer = document.createElement('div');
-    annotationToolsContainer.setAttribute("class", "annotation-tools-container");
+    // const annotationToolsContainer = document.createElement('div');
+    // annotationToolsContainer.setAttribute("class", "annotation-tools-container");
   
-    const annotationHeader = document.createElement("h1");
-    annotationHeader.setAttribute("class", "annotation-header");
-    annotationHeader.innerText = "Annotation:";
+    // const annotationHeader = document.createElement("h1");
+    // annotationHeader.setAttribute("class", "annotation-header");
+    // annotationHeader.innerText = "Annotation:";
   
-    const positiveAndNegativeSelectionEle = document.createElement("select")
-    positiveAndNegativeSelectionEle.setAttribute("id", "binary-selection");
-    positiveAndNegativeSelectionEle.setAttribute("class", "binary-selection");
+    // const positiveAndNegativeSelectionEle = document.createElement("select")
+    // positiveAndNegativeSelectionEle.setAttribute("id", "binary-selection");
+    // positiveAndNegativeSelectionEle.setAttribute("class", "binary-selection");
   
-    const positiveOption = document.createElement("option")
-    positiveOption.setAttribute("value", "positive")
-    positiveOption.innerText = "Positive";
+    // const positiveOption = document.createElement("option")
+    // positiveOption.setAttribute("value", "positive")
+    // positiveOption.innerText = "Positive";
   
-    const negativeOption = document.createElement("option")
-    negativeOption.setAttribute("value", "negative")
-    negativeOption.innerText = "Negative";
+    // const negativeOption = document.createElement("option")
+    // negativeOption.setAttribute("value", "negative")
+    // negativeOption.innerText = "Negative";
   
-    positiveAndNegativeSelectionEle.appendChild(positiveOption);
-    positiveAndNegativeSelectionEle.appendChild(negativeOption);
+    // positiveAndNegativeSelectionEle.appendChild(positiveOption);
+    // positiveAndNegativeSelectionEle.appendChild(negativeOption);
   
-    annotationToolsContainer.appendChild(annotationHeader);
-    annotationToolsContainer.appendChild(positiveAndNegativeSelectionEle);
+    // annotationToolsContainer.appendChild(annotationHeader);
+    // annotationToolsContainer.appendChild(positiveAndNegativeSelectionEle);
+
+    const addAnnotationBlockBtn = document.createElement('button')
+    addAnnotationBlockBtn.setAttribute('class', 'btn btn-primary')
+    addAnnotationBlockBtn.innerText = 'Add annotation'
+    addAnnotationBlockBtn.addEventListener('click', (event) => {
+
+    frameBoxContainer.appendChild(createAnnotationBlock(frameNumber))
+    })
   
     frameBoxContainer.appendChild(frameBoxHeader)
     frameBoxContainer.appendChild(frameImg)
-    frameBoxContainer.appendChild(annotationToolsContainer)
+    frameBoxContainer.appendChild(addAnnotationBlockBtn)
   
     return frameBoxContainer;
 }
