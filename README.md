@@ -28,7 +28,7 @@ python3 app.py
 
 After fetched video data, a user will need to click the "Add annotation" button to add a annotation block. In each block, user can select the predicate (currently default to relationship), two objects of interest, and annotation. User can add multiple annotation block to annotate mutliple pairs of objects in a frame. After finish  annotating, click submit annotation to send all annotated data to the server for further processing. 
 
-###Area for future development 
+### Area for future development 
 
 * Expand dataset and video selection
 * Allowing user to define predicate 
