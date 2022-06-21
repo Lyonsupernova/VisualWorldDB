@@ -3,9 +3,12 @@ export function drawBoundingBox(id, coords, color, parent) {
     const processedCoords = processCoords(coords)
     
     const boundingBox = document.createElement('div')
-    boundingBox.addEventListener('click', (event) => {
-       boundingBox.classList.toggle('selected')
-    })
+
+    // Disable marking bounding box by click.
+    // 
+    // boundingBox.addEventListener('click', (event) => {
+    //    boundingBox.classList.toggle('selected')
+    // })
    
     boundingBox.setAttribute('class', 'bounding-box ' + id);
     boundingBox.style.borderColor = color

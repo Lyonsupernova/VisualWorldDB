@@ -36,45 +36,15 @@ function createFrameBox(videoId, frameNumber, boundingBoxData) {
     const frameBoxHeader = document.createElement("h1");
     frameBoxHeader.setAttribute("class", "frame-box-header");
     frameBoxHeader.innerText = "Video " + videoId + ", Frame " + frameNumber;
-  
-    // const frameImg = document.createElement("img");
-    // frameImg.setAttribute("src", "static/frame-data" + "/" + videoId + ".png");
-    // frameImg.setAttribute("alt", "video frame");
-  
+
+
     const frameImg = drawImageByFrame(videoId, frameNumber, boundingBoxData)
     const boundBoxOptions = boundingBoxData.forEach(data => {
       const option = document.createElement('option')
-      //option.value = 
     })
 
     createAnnotationBlock(frameBoxContainer, frameNumber)
 
-
-    
-    // const annotationToolsContainer = document.createElement('div');
-    // annotationToolsContainer.setAttribute("class", "annotation-tools-container");
-  
-    // const annotationHeader = document.createElement("h1");
-    // annotationHeader.setAttribute("class", "annotation-header");
-    // annotationHeader.innerText = "Annotation:";
-  
-    // const positiveAndNegativeSelectionEle = document.createElement("select")
-    // positiveAndNegativeSelectionEle.setAttribute("id", "binary-selection");
-    // positiveAndNegativeSelectionEle.setAttribute("class", "binary-selection");
-  
-    // const positiveOption = document.createElement("option")
-    // positiveOption.setAttribute("value", "positive")
-    // positiveOption.innerText = "Positive";
-  
-    // const negativeOption = document.createElement("option")
-    // negativeOption.setAttribute("value", "negative")
-    // negativeOption.innerText = "Negative";
-  
-    // positiveAndNegativeSelectionEle.appendChild(positiveOption);
-    // positiveAndNegativeSelectionEle.appendChild(negativeOption);
-  
-    // annotationToolsContainer.appendChild(annotationHeader);
-    // annotationToolsContainer.appendChild(positiveAndNegativeSelectionEle);
 
     const addAnnotationBlockBtn = document.createElement('button')
     addAnnotationBlockBtn.setAttribute('class', 'btn btn-primary')
@@ -103,8 +73,8 @@ function drawImageByFrame(videoName, frameNumber, bounding_box_data) {
     var canvas = document.createElement('canvas');  
     
     video.addEventListener("seeked", () => {
-      canvas.width = video.videoWidth; // 480
-      canvas.height = video.videoHeight; // 320 
+      canvas.width = video.videoWidth; // 480px
+      canvas.height = video.videoHeight; // 320px 
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
       
