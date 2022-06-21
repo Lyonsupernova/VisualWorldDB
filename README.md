@@ -6,6 +6,7 @@
 * Lyons Lu - Back-end Engineer
 
 ##Description
+===========
 This is a web app built by HTML, CSS, and Python flask framework (using server-side rendering). The purpose for this web app is for annotating datasets for machine learning model training.
 
 The UI consists of two parts: the dashboard on the left and the annotation window on the right. Initially, the annotation window is empty and content will shows up after user clicked the "Fetch Data" button. After user selects desired dataset and a specific video within the selected dataset, the app will fetch a sample selection of frames for the selected video and display them in the annotation window. The app will also draw bounding box for each object appears in a frame.
